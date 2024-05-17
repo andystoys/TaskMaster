@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
   const taskInput = document.getElementById('taskInput');
   const addTaskBtn = document.getElementById('addTaskBtn');
   const taskList = document.getElementById('taskList');
@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const li = document.createElement('li');
     li.textContent = taskText;
     taskList.appendChild(li);
-    li.addEventListener('click', function () {
+    li.addEventListener('click', () => {
       li.classList.toggle('completed');
     });
-    li.addEventListener('contextmenu', function (e) {
+    li.addEventListener('contextmenu', e => {
       e.preventDefault();
       taskList.removeChild(li);
     });
