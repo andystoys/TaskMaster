@@ -21,7 +21,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./
         publish_branch: gh-pages
-        cname: 'andystoys.github.io/TaskMaster'
+        # cname: 'andystoys.github.io/TaskMaster'
 
     - name: Deploy to GitHub Pages (Staging)
       if: github.ref == 'refs/heads/staging'
