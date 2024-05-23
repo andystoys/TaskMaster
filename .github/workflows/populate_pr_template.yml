@@ -1,0 +1,37 @@
+name: Populate PR Template
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  populate_template:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      
+    - name: Extract Commit Messages
+      id: extract_commits
+      run: |
+        COMMIT_MESSAGES=$(git log --pretty=format:"%s" ${{ github.event.before }}..${{ github.sha }})
+        echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
+
+    - name: Populate PR Template
+      run: |
+        COMMIT_MESSAGES="${{ steps.extract_commits.outputs.commit_messages }}"
+        TEMPLATE=$(cat .github/PULL_REQUEST_TEMPLATE.md)
+        echo "${TEMPLATE/<!-- COMMIT_MESSAGES -->/$COMMIT_MESSAGES}" > PR_TEMPLATE.md
+        cat PR_TEMPLATE.md  # Display the populated PR template (optional)
+
+    - name: Create/Update PR with Populated Template
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "Automatically populated PR template with commit messages"
+        title: "Automated: Populate PR Template"
+        body: |
+          This PR template is automatically populated with commit messages.
+          Please review the changes accordingly.
+        labels: "automated"
