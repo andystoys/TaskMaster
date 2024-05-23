@@ -21,7 +21,7 @@ jobs:
     - name: Populate PR Template
       run: |
         COMMIT_MESSAGES="${{ steps.extract_commits.outputs.commit_messages }}"
-        TEMPLATE=$(cat .github/feature.md)
+        TEMPLATE=$(cat .github/PULL_REQUEST_TEMPLATE/feature.md)
         echo "${TEMPLATE/<!-- COMMIT_MESSAGES -->/$COMMIT_MESSAGES}" > PR_TEMPLATE.md
         cat PR_TEMPLATE.md  # Display the populated PR template (optional)
 
