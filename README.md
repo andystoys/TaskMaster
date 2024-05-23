@@ -9,5 +9,4 @@
 - Create PR from GUI using template
 - Generate formatted link as post-push hook (doable)
 
-
-We are on the test branch
+This is another test
