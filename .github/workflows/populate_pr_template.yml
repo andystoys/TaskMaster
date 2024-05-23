@@ -1,11 +1,13 @@
-name: Populate PR Template
+name: PR on File Change
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    paths:
+      - 'watch.txt' # Specify the path to the file you want to monitor for changes
+    types: [opened, reopened, synchronize]
 
 jobs:
-  populate_template:
+  trigger_pr:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,14 +26,15 @@ jobs:
         TEMPLATE=$(cat .github/PULL_REQUEST_TEMPLATE/feature.md)
         echo "${TEMPLATE/<!-- COMMIT_MESSAGES -->/$COMMIT_MESSAGES}" > PR_TEMPLATE.md
         cat PR_TEMPLATE.md  # Display the populated PR template (optional)
-
-    - name: Create/Update PR with Populated Template
+      
+    - name: Create PR
       uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "Automatically populated PR template with commit messages"
-        title: "Automated: Populate PR Template"
+        commit-message: "Automatically create PR on file change"
+        title: "Automatic PR: File Change Detected"
         body: |
-          This PR template is automatically populated with commit messages.
-          Please review the changes accordingly.
+          This PR is automatically created when a change is detected in the specified file.
+        base: "master" # Specify the base branch for the pull request
+        head: ${{ github.sha }} # Use the current commit as the head of the pull request
         labels: "automated"
