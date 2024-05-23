@@ -11,30 +11,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-      
-    - name: Extract Commit Messages
-      id: extract_commits
-      run: |
-        COMMIT_MESSAGES=$(git log --pretty=format:"%s" ${{ github.event.before }}..${{ github.sha }})
-        echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Populate PR Template
-      run: |
-        COMMIT_MESSAGES="${{ steps.extract_commits.outputs.commit_messages }}"
-        TEMPLATE=$(cat .github/PULL_REQUEST_TEMPLATE/feature.md)
-        echo "${TEMPLATE/<!-- COMMIT_MESSAGES -->/$COMMIT_MESSAGES}" > PR_TEMPLATE.md
-        cat PR_TEMPLATE.md  # Display the populated PR template (optional)
+      - name: Set up Git
+        run: |
+          git config --global user.name 'Your Name'
+          git config --global user.email 'youremail@example.com'
+
+      - name: Create Pull Request
+        run: |
+          gh pr create --title "Auto-generated PR" --body "This pull request was automatically generated because changes were made to certain files."
       
-    - name: Create PR
-      uses: peter-evans/create-pull-request@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "Automatically create PR on file change"
-        title: "Automatic PR: File Change Detected"
-        body: |
-          This PR is automatically created when a change is detected in the specified file.
-        base: "master" # Specify the base branch for the pull request
-        head: ${{ github.sha }} # Use the current commit as the head of the pull request
-        labels: "automated"
+    # - name: Extract Commit Messages
+    #   id: extract_commits
+    #   run: |
+    #     COMMIT_MESSAGES=$(git log --pretty=format:"%s" ${{ github.event.before }}..${{ github.sha }})
+    #     echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
+
+    # - name: Populate PR Template
+    #   run: |
+    #     COMMIT_MESSAGES="${{ steps.extract_commits.outputs.commit_messages }}"
+    #     TEMPLATE=$(cat .github/PULL_REQUEST_TEMPLATE/feature.md)
+    #     echo "${TEMPLATE/<!-- COMMIT_MESSAGES -->/$COMMIT_MESSAGES}" > PR_TEMPLATE.md
+    #     cat PR_TEMPLATE.md  # Display the populated PR template (optional)
+      
+    # - name: Create PR
+    #   uses: peter-evans/create-pull-request@v3
+    #   with:
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     commit-message: "Automatically create PR on file change"
+    #     title: "Automatic PR: File Change Detected"
+    #     body: |
+    #       This PR is automatically created when a change is detected in the specified file.
+    #     base: "master" # Specify the base branch for the pull request
+    #     head: ${{ github.sha }} # Use the current commit as the head of the pull request
+    #     labels: "automated"
