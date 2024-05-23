@@ -14,7 +14,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
       
-  - name: Extract Commit Messages
+    - name: Extract Commit Messages
       id: extract_commits
       run: |
         COMMIT_MESSAGES=$(git log --pretty=format:"%s" ${{ github.event.before }}..${{ github.sha }})
